@@ -1,0 +1,21 @@
+generate_trigger_gitlab-ci:
+  stage: build
+  image:
+    name: bitnami/jsonnet:latest
+    entrypoint: [""]
+  script:
+    - jsonnet -m . --ext-str exercism_projects="$(ls -d */)" --ext-str lang="$(echo $CI_PROJECT_NAME | sed -En 's/exercism-(.*)-sol/\1/p')" ".generate-config.jsonnet"
+  artifacts:
+    paths:
+      - .generated-config.yml
+
+trigger-tests:
+  stage: test
+  needs:
+    - generate_trigger_gitlab-ci
+  trigger:
+    include:
+      - artifact: .generated-config.yml
+        job: generate_trigger_gitlab-ci
+    strategy: depend
+    
