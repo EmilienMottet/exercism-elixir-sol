@@ -7,7 +7,7 @@ defmodule SaddlePoints do
   def rows(str) do
     str
     |> String.split("\n")
-    |> Enum.map(fn line -> line |> String.split() |> Enum.map(&String.to_integer(&1)) end)
+    |> Enum.map(fn line -> line |> String.split() |> Enum.map(&String.to_integer/1) end)
   end
 
   defp transpose(rows) do
