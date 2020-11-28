@@ -39,8 +39,8 @@ defmodule Matrix do
     matrix |> Enum.at(index)
   end
 
-  def transpose([[] | _]), do: []
-  def transpose(m) do
+  defp transpose([[] | _]), do: []
+  defp transpose(m) do
     [Enum.map(m, &hd/1) | transpose(Enum.map(m, &tl/1))]
   end
 
