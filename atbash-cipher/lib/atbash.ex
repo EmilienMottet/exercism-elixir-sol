@@ -29,7 +29,7 @@ defmodule Atbash do
 
   defp clean(text) do
     for c <- String.downcase(text) |> to_charlist,
-        (c >= ?a and c <= ?z) or (c >= ?0 and c <= ?9) do
+        c in ?a..?z or c in ?0..?9 do
       c
     end
   end
@@ -50,7 +50,7 @@ defmodule Atbash do
     add_space(t, ct + 1, [h | acc])
   end
 
-  defp permute(c) when c >= ?a and c <= ?z do
+  defp permute(c) when c in ?a..?z do
     ?z - (c - ?a)
   end
 
