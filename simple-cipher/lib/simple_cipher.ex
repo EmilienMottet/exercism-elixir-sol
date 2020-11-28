@@ -33,7 +33,7 @@ defmodule SimpleCipher do
   def encode(plaintext, key) do
     zip_text_key(plaintext, key)
     |> Enum.map(fn
-      {c, k} when c >= ?a and c <= ?z -> rem(?z - ?a + 1 + c - ?a + k - ?a, ?z - ?a + 1) + ?a
+      {c, k} when c in ?a..?z -> rem(?z - ?a + 1 + c - ?a + k - ?a, ?z - ?a + 1) + ?a
       {c, _k} -> c
     end)
     |> to_string()
@@ -52,7 +52,7 @@ defmodule SimpleCipher do
   def decode(ciphertext, key) do
     zip_text_key(ciphertext, key)
     |> Enum.map(fn
-      {c, k} when c >= ?a and c <= ?z ->
+      {c, k} when c in ?a..?z ->
         rem(?z - ?a + 1 + c - ?a - k + ?a, ?z - ?a + 1) + ?a
 
       {c, _k} ->
@@ -63,7 +63,13 @@ defmodule SimpleCipher do
 
   def zip_text_key(text, key) do
     binary_str = text |> to_charlist()
-    key = key |> to_charlist() |> Stream.cycle() |> Enum.take(length(binary_str))
+
+    key =
+      key
+      |> to_charlist()
+      |> Stream.cycle()
+      |> Enum.take(length(binary_str))
+
     Enum.zip(binary_str, key)
   end
 end
