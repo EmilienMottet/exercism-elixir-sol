@@ -1,65 +1,21 @@
-elisp:
-  stage: test
-  trigger:
-    project: EmilienMottet/exercism-elisp-sol
-    strategy: depend
+generate_trigger_gitlab-ci:
+  stage: build
+  image:
+    name: bitnami/jsonnet:latest
+    entrypoint: [""]
+  script:
+    - jsonnet -m . --ext-str exercism_projects="$(ls -d */)" --ext-str lang="$(echo $CI_PROJECT_NAME | sed -En 's/exercism-(.*)-sol/\1/p')" ".generate-config.jsonnet"
+  artifacts:
+    paths:
+      - .generated-config.yml
 
-x86-64:
+trigger-tests:
   stage: test
+  needs:
+    - generate_trigger_gitlab-ci
   trigger:
-    project: EmilienMottet/exercism-x86-64-sol
+    include:
+      - artifact: .generated-config.yml
+        job: generate_trigger_gitlab-ci
     strategy: depend
-
-rust:
-  stage: test
-  trigger:
-    project: EmilienMottet/exercism-rust-sol
-    strategy: depend
-
-java:
-  stage: test
-  trigger:
-    project: EmilienMottet/exercism-java-sol
-    strategy: depend
-
-go:
-  stage: test
-  trigger:
-    project: EmilienMottet/exercism-go-sol
-    strategy: depend
-
-clojure:
-  stage: test
-  trigger:
-    project: EmilienMottet/exercism-clojure-sol
-    strategy: depend
-
-ruby:
-  stage: test
-  trigger:
-    project: EmilienMottet/exercism-ruby-sol
-    strategy: depend
-
-elixir:
-  stage: test
-  trigger:
-    project: EmilienMottet/exercism-elixir-sol
-    strategy: depend
-
-cpp:
-  stage: test
-  trigger:
-    project: EmilienMottet/exercism-cpp-sol
-    strategy: depend
-
-c:
-  stage: test
-  trigger:
-    project: EmilienMottet/exercism-c-sol
-    strategy: depend
-
-erlang:
-  stage: test
-  trigger:
-    project: EmilienMottet/exercism-erlang-sol
-    strategy: depend
+    
