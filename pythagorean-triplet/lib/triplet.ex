@@ -31,7 +31,7 @@ defmodule Triplet do
     for a <- min..(max - 1), b <- min..(max - 1), c <- min..max, pythagorean?([a, b, c]) do
       [a, b, c]
     end
-    |> Enum.uniq_by(fn a -> a |> Enum.sort() end)
+    |> Enum.uniq_by(&Enum.sort/1)
   end
 
   @doc """
