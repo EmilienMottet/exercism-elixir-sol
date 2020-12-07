@@ -21,14 +21,6 @@ defmodule Connect do
     make_strings(map_board, length(board), String.length(hd(board)))
   end
 
-  # def find_first_black(board) do
-  #   board
-  #   |> Enum.find(fn
-  #     {_p, "O"} -> true
-  #     {_p, tile} when tile in ["X", "."] -> false
-  #   end)
-  # end
-
   def make_strings(board, _r_size, _c_size) when map_size(board) == 0 do
     :none
   end
