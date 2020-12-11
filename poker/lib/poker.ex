@@ -49,7 +49,7 @@ defmodule Poker do
     |> Enum.map(&(&1 |> Enum.map(fn {rank, color} -> "#{rank}#{color}" end)))
   end
 
-  def identify_hand(hand) do
+  defp identify_hand(hand) do
     cond do
       res = straight_flush(hand) -> res
       res = four(hand) -> res
@@ -63,14 +63,14 @@ defmodule Poker do
     end
   end
 
-  def straight_flush(hand) do
+  defp straight_flush(hand) do
     case {flush(hand), straight(hand)} do
       {{6, _}, {s, _}} when s in [4, 5] -> {9, sort_rest_by_rank(hand)}
       _ -> nil
     end
   end
 
-  def four(hand) do
+  defp four(hand) do
     rank = find_n_same(hand, 4)
 
     if rank == [] do
@@ -85,7 +85,7 @@ defmodule Poker do
     end
   end
 
-  def full_house(hand) do
+  defp full_house(hand) do
     case {three(hand), pairs(hand)} do
       {{3, {three_rank, _three_rest}}, {1, {pair_rank, _pair_rest}}} ->
         {7, {three_rank, pair_rank}}
@@ -95,7 +95,7 @@ defmodule Poker do
     end
   end
 
-  def flush(hand = [{_hr, hc} | _]) do
+  defp flush(hand = [{_hr, hc} | _]) do
     if not Enum.all?(hand, fn {_rank, color} -> color == hc end) do
       nil
     else
@@ -103,7 +103,7 @@ defmodule Poker do
     end
   end
 
-  def straight(hand) do
+  defp straight(hand) do
     sorted_by_rank =
       hand
       |> sort_rest_by_rank()
@@ -124,7 +124,7 @@ defmodule Poker do
     end
   end
 
-  def three(hand) do
+  defp three(hand) do
     rank = find_n_same(hand, 3)
 
     if rank == [] do
@@ -138,7 +138,7 @@ defmodule Poker do
     end
   end
 
-  def two_pairs(hand) do
+  defp two_pairs(hand) do
     case pairs(hand) do
       {1, {rank, _rest}} when length(rank) == 2 ->
         last_card =
@@ -153,7 +153,7 @@ defmodule Poker do
     end
   end
 
-  def find_n_same(hand, n) do
+  defp find_n_same(hand, n) do
     hand
     |> Enum.group_by(fn {rank, _color} -> rank end)
     |> Stream.map(fn {rank, cards} -> {rank, length(cards)} end)
@@ -162,7 +162,7 @@ defmodule Poker do
     |> Enum.sort()
   end
 
-  def pairs(hand) do
+  defp pairs(hand) do
     rank = find_n_same(hand, 2)
 
     if rank == [] do
@@ -176,19 +176,19 @@ defmodule Poker do
     end
   end
 
-  def sort_rest_by_rank(hand, used_cards \\ []) do
+  defp sort_rest_by_rank(hand, used_cards \\ []) do
     hand
     |> Stream.filter(fn card -> card not in used_cards end)
     |> Stream.map(fn {rank, _color} -> rank end)
     |> Enum.sort_by(&@ranks[&1])
   end
 
-  def highest_card(hand) do
+  defp highest_card(hand) do
     rank = sort_rest_by_rank(hand)
     {0, rank}
   end
 
-  def format_hand(hand) do
+  defp format_hand(hand) do
     hand
     |> Enum.map(fn card ->
       <<color::binary-size(1), rank::binary>> = card |> String.reverse()
