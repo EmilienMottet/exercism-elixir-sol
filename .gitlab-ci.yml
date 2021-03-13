@@ -11,6 +11,7 @@ build_vars:
         fi
       fi
     - echo DIR_TO_BE_TESTED=$DIR_TO_BE_TESTED >> build.env
+    - cat build.env
   artifacts:
     reports:
       dotenv: build.env
@@ -21,7 +22,9 @@ generate_trigger_gitlab-ci:
     name: bitnami/jsonnet:latest
     entrypoint: [""]
   script:
-    - jsonnet -m . --ext-str exercism_projects="$( echo $DIR_TO_BE_TESTED | sed -En 's/ /\n/pg' )" --ext-str lang="$(echo $CI_PROJECT_NAME | sed -En 's/exercism-(.*)-sol/\1/pg')" ".generate-config.jsonnet"
+    - DIR_SPLIT=$(echo $DIR_TO_BE_TESTED | tr " " "\n")
+    - LANG_PROJECT=$(echo $CI_PROJECT_NAME | sed -En 's/exercism-(.*)-sol/\1/pg')
+    - jsonnet -m . --ext-str exercism_projects="$DIR_SPLIT" --ext-str lang="$LANG_PROJECT" ".generate-config.jsonnet"
   dependencies:
     - build_vars
   artifacts:
