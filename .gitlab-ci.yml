@@ -21,7 +21,7 @@ generate_trigger_gitlab-ci:
     name: bitnami/jsonnet:latest
     entrypoint: [""]
   script:
-    - jsonnet -m . --ext-str exercism_projects="$( echo $DIR_TO_BE_TESTED | sed -En 's/ /\n/p' )" --ext-str lang="$(echo $CI_PROJECT_NAME | sed -En 's/exercism-(.*)-sol/\1/p')" ".generate-config.jsonnet"
+    - jsonnet -m . --ext-str exercism_projects="$( echo $DIR_TO_BE_TESTED | sed -En 's/ /\n/pg' )" --ext-str lang="$(echo $CI_PROJECT_NAME | sed -En 's/exercism-(.*)-sol/\1/pg')" ".generate-config.jsonnet"
   dependencies:
     - build_vars
   artifacts:
